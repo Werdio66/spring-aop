@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd
+">
+<!--    DI注解解析器     -->
+    <context:annotation-config/>
+<!--    IoC注解解析器    -->
+    <context:component-scan base-package="com._520.spring_aop"/>
+<!--    配置aop    -->
+    <aop:config>
+<!--        做什么增强(what)       -->
+        <aop:aspect ref="txManger">
+<!--            在哪个包中的哪个类的哪个方法上做增强（where）      -->
+            <aop:pointcut id="txPoint" expression="execution(* com._520.spring_aop.service.*Service.*(..))"/>
+<!--            在什么时机做增强（when）      -->
+<!--            <aop:before method="begin" pointcut-ref="txPoint"/>-->
+<!--            <aop:after-returning method="commit" pointcut-ref="txPoint"/>-->
+
+<!--            <aop:after-throwing method="rollback" pointcut-ref="txPoint" throwing="ex"/>-->
+
+            <aop:around method="around" pointcut-ref="txPoint"/>
+        </aop:aspect>
+    </aop:config>
+
+    <bean id="employeeDAO" class="com._520.spring_aop.dao.impl.EmployeeDAOImpl"/>
+    <bean id="employeeService" class="com._520.spring_aop.service.impl.EmployeeServiceImpl"/>
+    <bean id="txManger" class="com._520.spring_aop.tx.TranscationManger"/>
+</beans>
